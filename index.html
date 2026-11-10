@@ -50,13 +50,15 @@ function render(){
   const byCategory=category=>projects.map((p,i)=>p[0]===category?i:-1).filter(i=>i>=0);
   const interleave=(...lists)=>{const result=[];const max=Math.max(...lists.map(l=>l.length));for(let i=0;i<max;i++)for(const list of lists)if(list[i]!==undefined)result.push(list[i]);return unique(result)};
   const mixed=interleave(byCategory('Commercial'),byCategory('Content'),byCategory('Motion Graphics'),byCategory('Corporate'),byCategory('Meme Style'),byCategory('Full Film'),byCategory('Animation'));
+  const verifiedViews={}; // Populate only with confirmed public view counts keyed by video ID.
+  const ranked=projects.filter(p=>p[3]&&Number.isFinite(verifiedViews[p[3]])).sort((a,b)=>verifiedViews[b[3]]-verifiedViews[a[3]]);
   const curated=[
-   {title:'Para você',items:mixed.slice(0,16)},
-   {title:'Maiores visualizações',items:interleave(byCategory('Content'),byCategory('Commercial'),byCategory('Corporate')).slice(0,12)},
-   {title:'Top 10',items:interleave(byCategory('Commercial'),byCategory('Motion Graphics'),byCategory('Content'),byCategory('Full Film')).slice(0,10)},
-   {title:'Os mais amados',items:interleave(byCategory('Animation'),byCategory('Meme Style'),byCategory('Commercial'),byCategory('Content')).slice(0,12)}
+   {title:'For You',items:mixed.slice(0,16)},
+   {title:'Most Viewed',items:ranked.slice(0,12),metrics:true},
+   {title:'Top 10 Picks',items:interleave(byCategory('Commercial'),byCategory('Motion Graphics'),byCategory('Content'),byCategory('Full Film')).slice(0,10)},
+   {title:'Fan Favorites',items:interleave(byCategory('Animation'),byCategory('Meme Style'),byCategory('Commercial'),byCategory('Content')).slice(0,12)}
   ];
-  grid.innerHTML=curated.map(row=>'<section class="netflix-section"><div class="netflix-heading"><div class="netflix-title">'+row.title+'<span class="netflix-count">'+row.items.length+' vídeos</span></div><div class="netflix-controls"><button type="button" data-scroll="-1" aria-label="Rolar '+row.title+' para a esquerda">‹</button><button type="button" data-scroll="1" aria-label="Rolar '+row.title+' para a direita">›</button></div></div><div class="netflix-track">'+row.items.map(cardHtml).join('')+'</div></section>').join('')+'<p class="curation-note">Coleções demonstrativas selecionadas por projeto. As seções de visualizações, Top 10 e favoritos ainda não representam métricas reais.</p>';
+  grid.innerHTML=curated.map(row=>'<section class="netflix-section"><div class="netflix-heading"><div class="netflix-title">'+row.title+(row.items.length?'<span class="netflix-count">'+row.items.length+' videos</span>':'')+'</div>'+(row.items.length?'<div class="netflix-controls"><button type="button" data-scroll="-1" aria-label="Scroll '+row.title+' left">‹</button><button type="button" data-scroll="1" aria-label="Scroll '+row.title+' right">›</button></div>':'')+'</div>'+(row.items.length?'<div class="netflix-track">'+row.items.map(cardHtml).join('')+'</div>':'<p class="curation-note">Ranking coming soon — awaiting verified video view counts.</p>')+'</section>').join('')+'<p class="curation-note">Top 10 Picks and Fan Favorites are editorial selections, not engagement rankings.</p>';
   return;
  }
  const visible=shown.filter(p=>channel==='All channels'||channelOf(p)===channel);
