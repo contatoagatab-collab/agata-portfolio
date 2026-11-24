@@ -190,12 +190,9 @@ function render(){
   const mostViewedCandidates=interleave(byCategory('Meme Style'),byCategory('Full Film'),byCategory('Motion Graphics'),byCategory('Commercial')).slice(0,10);
   const curated=[
    {title:'For You',items:forYou},
-   {title:'Most Viewed',items:mostViewedCandidates,provisional:true},
-   {title:'Top 10 Picks',items:interleave(byCategory('Commercial'),byCategory('Motion Graphics'),byCategory('Content'),byCategory('Full Film')).slice(0,10),auto:true},
-   {title:'Fan Favorites',items:interleave(byCategory('Animation'),byCategory('Meme Style'),byCategory('Commercial'),byCategory('Content')).slice(0,12)}
+   {title:'Most Viewed',items:mostViewedCandidates,provisional:true}
   ];
-  grid.innerHTML=curated.map(row=>'<section class="netflix-section"'+(row.auto?' data-autoscroll="true"':'')+'><div class="netflix-heading"><div class="netflix-title">'+row.title+'<span class="netflix-count">'+row.items.length+' videos</span></div><div class="netflix-controls"><button type="button" data-scroll="-1" aria-label="Scroll '+row.title+' left">‹</button><button type="button" data-scroll="1" aria-label="Scroll '+row.title+' right">›</button></div></div>'+(row.provisional?'<p class="curation-note">Featured selection · actual view-count ranking pending verified metrics.</p>':'')+'<div class="netflix-track">'+row.items.map(cardHtml).join('')+'</div></section>').join('')+'<p class="curation-note">Top 10 Picks and Fan Favorites are editorial selections, not engagement rankings.</p>';
-  startTop10Autoscroll();
+  grid.innerHTML=curated.map(row=>'<section class="netflix-section"'+(row.auto?' data-autoscroll="true"':'')+'><div class="netflix-heading"><div class="netflix-title">'+row.title+'<span class="netflix-count">'+row.items.length+' videos</span></div><div class="netflix-controls"><button type="button" data-scroll="-1" aria-label="Scroll '+row.title+' left">‹</button><button type="button" data-scroll="1" aria-label="Scroll '+row.title+' right">›</button></div></div>'+(row.provisional?'<p class="curation-note">Featured selection · actual view-count ranking pending verified metrics.</p>':'')+'<div class="netflix-track">'+row.items.map(cardHtml).join('')+'</div></section>').join('');
   return;
  }
  const visible=shown.filter(p=>channel==='All channels'||channelOf(p)===channel);
